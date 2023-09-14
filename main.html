@@ -1,16 +1,93 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-      <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Shopping List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        #total {
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+    <h1>Dynamic Shopping List</h1>
+    <input type="text" id="item-name-input" placeholder="Item Name">
+    <input type="number" id="item-price-input" placeholder="Item Price">
+    <button id="add-button">Add</button>
 
+    <table>
+        <thead>
+            <tr>
+                <th data-ns-test="item-name">Item Name</th>
+                <th data-ns-test="item-price">Item Price</th>
+            </tr>
+        </thead>
+        <tbody id="list"></tbody>
+        <tfoot>
+            <tr>
+                <td>Total:</td>
+                <td data-ns-test="grandTotal" id="total">0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        const itemNameInput = document.getElementById('item-name-input');
+        const itemPriceInput = document.getElementById('item-price-input');
+        const addButton = document.getElementById('add-button');
+        const itemList = document.getElementById('list');
+        const grandTotalElement = document.getElementById('total');
+
+        addButton.addEventListener('click', addItem);
+
+        function addItem() {
+            const itemName = itemNameInput.value.trim();
+            const itemPrice = parseFloat(itemPriceInput.value);
+
+            if (itemName === '' || isNaN(itemPrice) || itemPrice <= 0) {
+                alert('Invalid input. Please enter a valid item name and price.');
+                return;
+            }
+
+            const row = itemList.insertRow(-1);
+            const nameCell = row.insertCell(0);
+            const priceCell = row.insertCell(1);
+
+            nameCell.textContent = itemName;
+            priceCell.textContent = itemPrice.toFixed(2);
+
+            itemNameInput.value = '';
+            itemPriceInput.value = '';
+
+            updateGrandTotal();
+        }
+
+        function updateGrandTotal() {
+            let total = 0;
+            const rows = itemList.rows;
+
+            for (let i = 1; i < rows.length; i++) {
+                const price = parseFloat(rows[i].cells[1].textContent);
+                if (!isNaN(price)) {
+                    total += price;
+                }
+            }
+
+            grandTotalElement.textContent = total.toFixed(2);
+        }
+    </script>
 </body>
-
 </html>
